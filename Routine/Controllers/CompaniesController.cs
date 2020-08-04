@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using Routine.APi.Services;
 using Routine.Models;
 using System;
@@ -53,34 +54,30 @@ namespace Routine.APi.Controllers
      */
     [ApiController]
     [Route("api/companies")] //可用 [Route("api/[controller]")]
-    public class CompaniesController:ControllerBase
+    public class CompaniesController : ControllerBase
     {
         private readonly ICompanyRepository _companyRepository;
+        private readonly IMapper _mapper;
 
-        public CompaniesController(ICompanyRepository companyRepository)
+        public CompaniesController(ICompanyRepository companyRepository, IMapper mapper)
         {
             this._companyRepository = companyRepository ??
                                         throw new ArgumentNullException(nameof(companyRepository));
+            this._mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetCompanies()
+        //public async Task<IActionResult> GetCompanies() 與下方相同但下方更明確
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
         {
             var companies = await _companyRepository.GetCompaniesAsync();
-            var companyDtos = new List<CompanyDto>();
-            foreach (var company in companies)
-            {
-                companyDtos.Add(new CompanyDto
-                {
-                    Id = company.Id,
-                    Name = company.Name
-                });
-            }
+            //                       目標:IEnumerable<CompanyDto>來源companies
+            var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
             return Ok(companyDtos);  //OK() 返回200
         }
 
-        [HttpGet("{companyId}")]  //还可用 [Route("{companyId}")]
-        public async Task<IActionResult> GetCompany(Guid companyId)
+        [HttpGet("{companyId}")]  //可用 [Route("{companyId}")]
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(Guid companyId)
         {
             //較不適合的方法：
             //var exist = await _companyRepository.CompanyExistsAsync(companyId);
@@ -98,7 +95,9 @@ namespace Routine.APi.Controllers
             {
                 return NotFound();  //返回404
             }
-            return Ok(company);
+            //      目標:IEnumerable<CompanyDto>來源company
+            var companyDtos = _mapper.Map<CompanyDto>(company);
+            return Ok(companyDtos);
         }
 
     }

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -34,6 +35,8 @@ namespace Routine
                 //setup.OutputFormatters.Add(new XmlDataContractSerializerOutputFormatter());//加入xml返回格式
                 //setup.OutputFormatters.Insert(0, new XmlDataContractSerializerOutputFormatter()); 預設設定為XML
             }).AddXmlDataContractSerializerFormatters();//.net core 新增方法input、ouput都會新增
+
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<ICompanyRepository, CompanyRepository>();
 
             services.AddDbContext<RoutineDbContext>(option =>
