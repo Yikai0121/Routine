@@ -41,7 +41,7 @@ namespace Routine
 
             services.AddDbContext<RoutineDbContext>(option =>
             {
-                option.UseSqlite("Data Source=routine.db");
+                option.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
             });
         }
 

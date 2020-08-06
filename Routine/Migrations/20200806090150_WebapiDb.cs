@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace Routine.Migrations
 {
-    public partial class Initial : Migration
+    public partial class WebapiDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -42,21 +42,6 @@ namespace Routine.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
-
-            migrationBuilder.InsertData(
-                table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("bbdee09c-089b-4d30-bece-44df5923716c"), "Great Company", "Microsoft" });
-
-            migrationBuilder.InsertData(
-                table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("6fb600c1-9011-4fd7-9234-881379716440"), "Don't be evil", "Google" });
-
-            migrationBuilder.InsertData(
-                table: "Companies",
-                columns: new[] { "Id", "Introduction", "Name" },
-                values: new object[] { new Guid("5efc910b-2f45-43df-afee-620d40542853"), "Fubao Company", "Alipapa" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Employees_CompanyId",

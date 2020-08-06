@@ -9,7 +9,7 @@ namespace Routine.APi.Data
 {
     public class RoutineDbContext : DbContext
     {
-        //调用并获取父类的options
+        //调用並獲取父類的options
         public RoutineDbContext(DbContextOptions<RoutineDbContext>options):base(options)
         {
 
@@ -33,26 +33,7 @@ namespace Routine.APi.Data
                 .HasForeignKey(x => x.CompanyId)
                 //删除Company时如果有Employee，则无法删除
                 .OnDelete(DeleteBehavior.Restrict);
-            modelBuilder.Entity<Company>().HasData(
-                new Company 
-                {
-                    Id=Guid.Parse("bbdee09c-089b-4d30-bece-44df5923716c"),
-                    Name="Microsoft",
-                    Introduction="Great Company"
-                },
-                new Company
-                {
-                    Id=Guid.Parse("6fb600c1-9011-4fd7-9234-881379716440"),
-                    Name="Google",
-                    Introduction="Don't be evil"
-                },
-                new Company
-                {
-                    Id=Guid.Parse("5efc910b-2f45-43df-afee-620d40542853"),
-                    Name="Alipapa",
-                    Introduction="Fubao Company"
-                }
-                );
+            
         }
     }
 }

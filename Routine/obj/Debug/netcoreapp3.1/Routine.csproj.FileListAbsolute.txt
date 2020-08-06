@@ -150,3 +150,5 @@ C:\Users\user\Documents\GitHub\Routine\Routine\bin\Debug\netcoreapp3.1\AutoMappe
 C:\Users\user\Documents\GitHub\Routine\Routine\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll
 C:\Users\user\Documents\GitHub\Routine\Routine\obj\Debug\netcoreapp3.1\Routine.csproj.CoreCompileInputs.cache
 C:\Users\user\Documents\GitHub\Routine\Routine\obj\Debug\netcoreapp3.1\Routine.MvcApplicationPartsAssemblyInfo.cache
+C:\Users\k2lairrol\Documents\GitHub\Routine\Routine\bin\Debug\netcoreapp3.1\AutoMapper.dll
+C:\Users\k2lairrol\Documents\GitHub\Routine\Routine\bin\Debug\netcoreapp3.1\AutoMapper.Extensions.Microsoft.DependencyInjection.dll

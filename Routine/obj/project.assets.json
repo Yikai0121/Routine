@@ -5445,19 +5445,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\user\\.nuget\\packages\\": {}
+    "C:\\Users\\k2lairrol\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\user\\Documents\\GitHub\\Routine\\Routine\\Routine.csproj",
+      "projectUniqueName": "C:\\Users\\k2lairrol\\Documents\\GitHub\\Routine\\Routine\\Routine.csproj",
       "projectName": "Routine",
-      "projectPath": "C:\\Users\\user\\Documents\\GitHub\\Routine\\Routine\\Routine.csproj",
-      "packagesPath": "C:\\Users\\user\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\user\\Documents\\GitHub\\Routine\\Routine\\obj\\",
+      "projectPath": "C:\\Users\\k2lairrol\\Documents\\GitHub\\Routine\\Routine\\Routine.csproj",
+      "packagesPath": "C:\\Users\\k2lairrol\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\k2lairrol\\Documents\\GitHub\\Routine\\Routine\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\user\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\k2lairrol\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
