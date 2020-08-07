@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Routine.APi.Data;
 using Routine.APi.Entities;
+using Routine.DtoParameters;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 
 namespace Routine.APi.Services
@@ -24,11 +26,13 @@ namespace Routine.APi.Services
                 throw new ArgumentNullException(nameof(company));
             }
             company.Id = Guid.NewGuid();
-            foreach (var employee in company.Employees)
+            if(company.Employees != null)
             {
-                employee.Id = Guid.NewGuid();
+                foreach (var employee in company.Employees)
+                {
+                    employee.Id = Guid.NewGuid();
+                }
             }
-
             _context.Companies.Add(company);
         }
 
@@ -82,9 +86,32 @@ namespace Routine.APi.Services
             return await _context.Companies.FirstOrDefaultAsync(x => x.Id == companyId);
         }
 
-        public async Task<IEnumerable<Company>> GetCompaniesAsync()
+        public async Task<IEnumerable<Company>> GetCompaniesAsync(CompanyDtoParameters parameters)
         {
-            return await _context.Companies.ToListAsync();
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters)); 
+            }
+            if (string.IsNullOrWhiteSpace(parameters.CompanyName) && string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                return await _context.Companies.ToListAsync();
+            }
+            
+            var queryExpression = _context.Companies as IQueryable<Company>;
+            
+            if (!string.IsNullOrWhiteSpace(parameters.CompanyName))
+            {
+                parameters.CompanyName = parameters.CompanyName.Trim();
+                queryExpression = queryExpression.Where(x => x.Name == parameters.CompanyName);
+            }
+
+            if (!string.IsNullOrWhiteSpace(parameters.SearchTerm))
+            {
+                parameters.SearchTerm = parameters.SearchTerm.Trim();
+                queryExpression = queryExpression.Where(x => x.Name.Contains(parameters.SearchTerm) ||
+                                                           x.Introduction.Contains(parameters.SearchTerm));
+            }
+            return await queryExpression.ToListAsync();
         }
 
         public async Task<IEnumerable<Company>> GetCompaniesAsync(IEnumerable<Guid> companyIds)
@@ -116,22 +143,43 @@ namespace Routine.APi.Services
                 .FirstOrDefaultAsync();
         }
 
-        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId)
+        public async Task<IEnumerable<Employee>> GetEmployeesAsync(Guid companyId, string genderDisplay,string q)
         {
             if (companyId == Guid.Empty)
             {
+                
                 throw new ArgumentNullException(nameof(companyId));
             }
-
-            return await _context.Employees
+            if (string.IsNullOrWhiteSpace(genderDisplay) && string.IsNullOrWhiteSpace(q))
+            {
+                return await _context.Employees
                 .Where(x => x.CompanyId == companyId)
                 .OrderBy(x => x.EmployeeNo)
                 .ToListAsync();
+            }
+            var items = _context.Employees.Where(x => x.CompanyId == companyId);
+
+            if (!string.IsNullOrWhiteSpace(genderDisplay))
+            {
+                genderDisplay = genderDisplay.Trim();
+                var gender = Enum.Parse<Gender>(genderDisplay); //將字串genderDisplay轉換為Enum
+
+                items = items.Where(x => x.Gender == gender);//加入查詢條件
+            }
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                q = q.Trim();
+                items = items.Where(x => x.EmployeeNo.Contains(q)
+                                    || x.FirstName.Contains(q)
+                                    || x.LastName.Contains(q));
+            }
+           
+            return await items.OrderBy(x => x.EmployeeNo).ToListAsync();
         }
 
         public void UpdateCompany(Company company)
         {
-            //无需显式地声明
+            
             //_context.Entry(company).State = EntityState.Modified;
         }
 

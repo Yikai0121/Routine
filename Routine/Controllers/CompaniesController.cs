@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Query.SqlExpressions;
+using Routine.APi.Entities;
 using Routine.APi.Services;
+using Routine.DtoParameters;
 using Routine.Models;
 using System;
 using System.Collections.Generic;
@@ -67,17 +70,19 @@ namespace Routine.APi.Controllers
         }
 
         [HttpGet]
+        [HttpHead]
         //public async Task<IActionResult> GetCompanies() 與下方相同但下方更明確
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies()
+        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompanies([FromQuery] CompanyDtoParameters parameters)
         {
-            var companies = await _companyRepository.GetCompaniesAsync();
+            
+            var companies = await _companyRepository.GetCompaniesAsync(parameters);
             //                       目標:IEnumerable<CompanyDto>來源companies
             var companyDtos = _mapper.Map<IEnumerable<CompanyDto>>(companies);
             return Ok(companyDtos);  //OK() 返回200
         }
 
-        [HttpGet("{companyId}")]  //可用 [Route("{companyId}")]
-        public async Task<ActionResult<IEnumerable<CompanyDto>>> GetCompany(Guid companyId)
+        [HttpGet("{companyId}",Name = nameof(GetCompany))]  //可用 [Route("{companyId}")]
+        public async Task<ActionResult<CompanyDto>> GetCompany(Guid companyId)
         {
             //較不適合的方法：
             //var exist = await _companyRepository.CompanyExistsAsync(companyId);
@@ -95,9 +100,19 @@ namespace Routine.APi.Controllers
             {
                 return NotFound();  //返回404
             }
-            //      目標:IEnumerable<CompanyDto>來源company
+            //      目標:<CompanyDto>來源company
             var companyDtos = _mapper.Map<CompanyDto>(company);
             return Ok(companyDtos);
+        }
+        [HttpPost]
+        public async Task<ActionResult<CompanyDto>> CreatCompany([FromBody] CompanyAddDto company)
+        {
+            var entity = _mapper.Map<Company>(company);
+            _companyRepository.AddCompany(entity);
+            await _companyRepository.SaveAsync();
+
+            var returnDto = _mapper.Map<CompanyDto>(entity);
+            return CreatedAtRoute(nameof(GetCompany), new { companyId = returnDto.Id }, returnDto);
         }
 
     }

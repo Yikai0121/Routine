@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Routine.APi.Entities;
 using Routine.APi.Services;
 using Routine.Models;
 
@@ -24,37 +25,45 @@ namespace Routine.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetEmployeesForCompany(Guid companyId)
-        {
-            if (await _companyRepository.CompanyExistsAsync(companyId))
-            {
-                var employees = await _companyRepository.GetEmployeesAsync(companyId);
-                var employeeDtos = _mapper.Map<IEnumerable<EmployeeDto>>(employees);
-                return Ok(employeeDtos);
-            }
-            else
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> GetEmployeesForCompany(Guid companyId ,[FromQuery(Name = "Gender")] string genderDisplay,string q)
+        {                                                                                                //進行過濾                    //進行查詢              
+            if(! await _companyRepository.CompanyExistsAsync(companyId))
             {
                 return NotFound();
             }
+            var empolyees = await _companyRepository.GetEmployeesAsync(companyId,genderDisplay,q);
+            var empolyeeDtos = _mapper.Map<IEnumerable<EmployeeDto>>(empolyees);
+            return Ok(empolyeeDtos);
         }
 
-        [HttpGet("{employeeId}")]
-        public async Task<IActionResult> GetEmployeesForCompany(Guid companyId, Guid employeeId)
+        [HttpGet("{employeeId}",Name = nameof(GetEmployeeForCompany))]
+        public async Task<ActionResult<EmployeeDto>> GetEmployeeForCompany(Guid companyId, Guid employeeId)
         {
-            if (await _companyRepository.CompanyExistsAsync(companyId))
-            {
-                var employee = await _companyRepository.GetEmployeeAsync(companyId, employeeId);
-                if (employee == null)
-                {
-                    return NotFound();
-                }
-                var employeeDto = _mapper.Map<EmployeeDto>(employee);
-                return Ok(employeeDto);
-            }
-            else
+            if (!await _companyRepository.CompanyExistsAsync(companyId))
             {
                 return NotFound();
             }
+            var empolyee = await _companyRepository.GetEmployeeAsync(companyId, employeeId);
+            if(empolyee == null)
+            {
+                return NotFound();
+            }
+            var empolyeeDto = _mapper.Map<EmployeeDto>(empolyee);
+            return Ok(empolyeeDto);
+        }
+        [HttpPost]
+        public async Task<ActionResult<EmployeeDto>> CreateEmpolyeeForCompany(Guid companyId,EmployeeAddDto employee)
+        {
+            if(!await _companyRepository.CompanyExistsAsync(companyId))
+            {
+                return NotFound();
+            }
+            var entity = _mapper.Map<Employee>(employee);
+            _companyRepository.AddEmployee(companyId, entity);
+            await _companyRepository.SaveAsync();
+
+            var returnDto = _mapper.Map<EmployeeDto>(entity);
+            return CreatedAtRoute(nameof(GetEmployeeForCompany), new { companyId = returnDto.CompanyId, employeeId=returnDto.Id }, returnDto);
         }
     }
 }
