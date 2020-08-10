@@ -105,6 +105,29 @@ namespace Routine.APi.Controllers
             return Ok(companyDtos);
         }
         [HttpPost]
+        //CompanyAddDto加入public ICollection<Employee> Employees { get; set; } = new List<Employee>();
+        //同時創建empolyee子類資源
+            //         {
+            //     "name":"Asus",
+            //     "introduction":"A Good Company",
+            //     "employees":[
+            //         {
+            //             "employeeNo":"F001",
+            //            "firstName":"White",
+            //            "lastName":"Face",
+            //            "gender":0,
+            //            "dataofBirth":"1994-8-3"
+            //         },
+            //          {
+            //             "employeeNo":"F011",
+            //            "firstName":"Black",
+            //            "lastName":"Face",
+            //            "gender":1,
+            //            "dataofBirth":"1994-12-3"
+            //         }
+            //     ]
+    
+            //}
         public async Task<ActionResult<CompanyDto>> CreatCompany([FromBody] CompanyAddDto company)
         {
             var entity = _mapper.Map<Company>(company);
@@ -114,6 +137,10 @@ namespace Routine.APi.Controllers
             var returnDto = _mapper.Map<CompanyDto>(entity);
             return CreatedAtRoute(nameof(GetCompany), new { companyId = returnDto.Id }, returnDto);
         }
+        [HttpOptions]
+        public IActionResult GetCompaniesOptions()
+        {
 
+        }
     }
 }
