@@ -9,8 +9,7 @@ using System.Threading.Tasks;
 namespace Routine.Models
 {
 
-    public class EmployeeAddDto : EmployeeAddOrUpdateDto
+    public class EmployeeUpdateDto : EmployeeAddOrUpdateDto
     {
-
     }
 }

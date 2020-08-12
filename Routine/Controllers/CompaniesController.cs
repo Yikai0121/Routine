@@ -130,6 +130,11 @@ namespace Routine.APi.Controllers
             //}
         public async Task<ActionResult<CompanyDto>> CreatCompany([FromBody] CompanyAddDto company)
         {
+            //[ApiController]會自動返回400錯誤
+            //if (!ModelState.IsValid)
+            //{
+            //    return UnprocessableEntity(ModelState);
+            //}
             var entity = _mapper.Map<Company>(company);
             _companyRepository.AddCompany(entity);
             await _companyRepository.SaveAsync();
@@ -137,10 +142,13 @@ namespace Routine.APi.Controllers
             var returnDto = _mapper.Map<CompanyDto>(entity);
             return CreatedAtRoute(nameof(GetCompany), new { companyId = returnDto.Id }, returnDto);
         }
+
+        //option 可以讓使用者知道這個API有什麼方法可以使用
         [HttpOptions]
         public IActionResult GetCompaniesOptions()
         {
-
+            Response.Headers.Add("Allow", "GET,POST,OPTIONS");
+            return Ok();
         }
     }
 }
